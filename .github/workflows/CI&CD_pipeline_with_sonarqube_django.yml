@@ -1,0 +1,74 @@
+name: Django CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run Tests
+        run: |
+          python manage.py test
+
+  auto_commit_push:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Print Working Directory
+        run: pwd
+      - name: List Files
+        run: ls -R
+      - name: Auto Commit and Push
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Auto-commit by GitHub Actions"
+          git push
+
+  sonarqube_scan:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.7
+      - name: Install SonarQube Scanner
+        run: |
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+          unzip sonar-scanner-cli-4.6.2.2472-linux.zip
+          export PATH="$PATH:$(pwd)/sonar-scanner-cli-4.6.2.2472-linux/bin"
+      - name: SonarQube Scan
+        run: sonar-scanner -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=your_project_key -Dsonar.sources=.
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: "https://sonarqube/github/SyedAliAhmedShah/SPM_ASSIGN_3.git""
+
+  auto_pull:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Auto Pull
+        run: |
+          git pull
