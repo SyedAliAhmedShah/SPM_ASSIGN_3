@@ -1,19 +1,7 @@
-asgiref==3.7.2
-cffi==1.16.0
-dj-database-url==2.1.0
-Django==5.0
-django-heroku==0.3.1
-gevent==23.9.1
-greenlet==3.0.3
-gunicorn==21.2.0
-mysqlclient==2.2.1
-packaging==23.2
-psycopg2==2.9.9
-pycparser==2.21
-sqlparse==0.4.4
-typing_extensions==4.9.0
-tzdata==2023.3
-waitress==2.1.2
-whitenoise==6.6.0
-zope.event==5.0
-zope.interface==6.1
+pip install asgiref==3.7.2
+pip install Django==5.0
+pip install mysqlclient==2.2.1
+pip install pip==23.3.2
+pip install setuptools==65.5.0
+pip install sqlparse==0.4.4
+pip install tzdata==2023.3
